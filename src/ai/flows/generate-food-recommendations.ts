@@ -9,18 +9,28 @@
  */
 
 import {ai} from '@/ai/genkit';
+import {searchNearbyPlaces} from '@/ai/tools/google-places';
 import {z} from 'genkit';
 
 const GenerateFoodRecommendationsInputSchema = z.object({
-  mood: z.string().describe('The user\'s current mood.'),
-  occasion: z.string().describe('The occasion for the meal (e.g., dinner, lunch, celebration).'),
-  cuisine: z.string().describe('The preferred cuisine (e.g., Italian, Mexican, Indian).'),
+  mood: z.string().describe("The user's current mood."),
+  occasion: z
+    .string()
+    .describe('The occasion for the meal (e.g., dinner, lunch, celebration).'),
+  cuisine: z
+    .string()
+    .describe('The preferred cuisine (e.g., Italian, Mexican, Indian).'),
   dietaryPreference: z
     .string()
-    .describe('The dietary preference (e.g., vegetarian, non-vegetarian, vegan, gluten-free).'),
+    .describe(
+      'The dietary preference (e.g., vegetarian, non-vegetarian, vegan, gluten-free).'
+    ),
   time: z.string().describe('The preferred time for the meal.'),
-  location: z.string().describe('The user\'s current location.'),
-  additionalNotes: z.string().optional().describe('Any additional notes or preferences from the user.'),
+  location: z.string().describe("The user's current location."),
+  additionalNotes: z
+    .string()
+    .optional()
+    .describe('Any additional notes or preferences from the user.'),
 });
 
 export type GenerateFoodRecommendationsInput = z.infer<
@@ -28,13 +38,21 @@ export type GenerateFoodRecommendationsInput = z.infer<
 >;
 
 const GenerateFoodRecommendationsOutputSchema = z.object({
-  recommendations: z.array(
-    z.object({
-      restaurantName: z.string().describe('The name of the restaurant.'),
-      foodSuggestion: z.string().describe('A specific food suggestion from the restaurant.'),
-      description: z.string().describe('A description of the restaurant and food.'),
-    })
-  ).describe('A list of personalized food and restaurant recommendations.'),
+  recommendations: z
+    .array(
+      z.object({
+        restaurantName: z.string().describe('The name of the restaurant.'),
+        foodSuggestion: z
+          .string()
+          .describe('A specific food suggestion from the restaurant.'),
+        description: z
+          .string()
+          .describe('A description of the restaurant and food.'),
+      })
+    )
+    .describe(
+      'A list of 9 personalized food and restaurant recommendations.'
+    ),
 });
 
 export type GenerateFoodRecommendationsOutput = z.infer<
@@ -51,7 +69,10 @@ const prompt = ai.definePrompt({
   name: 'generateFoodRecommendationsPrompt',
   input: {schema: GenerateFoodRecommendationsInputSchema},
   output: {schema: GenerateFoodRecommendationsOutputSchema},
-  prompt: `You are a personal food and restaurant recommendation assistant. Based on the user's mood, occasion, cuisine preferences, dietary requirements, preferred time, and location, provide a list of personalized food and restaurant recommendations.
+  tools: [searchNearbyPlaces],
+  prompt: `You are a personal food and restaurant recommendation assistant. Based on the user's mood, occasion, cuisine preferences, dietary requirements, preferred time, and location, provide a list of 9 personalized food and restaurant recommendations.
+
+Use the searchNearbyPlaces tool to find relevant restaurants.
 
 Mood: {{{mood}}}
 Occasion: {{{occasion}}}
@@ -62,7 +83,8 @@ Location: {{{location}}}
 Additional Notes: {{{additionalNotes}}}
 
 Please provide restaurant recommendations that closely align with the details provided.
-`, config: {
+`,
+  config: {
     safetySettings: [
       {
         category: 'HARM_CATEGORY_HATE_SPEECH',
@@ -81,7 +103,7 @@ Please provide restaurant recommendations that closely align with the details pr
         threshold: 'BLOCK_LOW_AND_ABOVE',
       },
     ],
-  }
+  },
 });
 
 const generateFoodRecommendationsFlow = ai.defineFlow(

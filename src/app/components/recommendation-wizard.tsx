@@ -54,7 +54,7 @@ export function RecommendationWizard() {
   }, [state, toast]);
 
   return (
-    <form action={formAction} className="w-full max-w-4xl space-y-12">
+    <form action={formAction} className="w-full max-w-6xl space-y-12">
       <Card className="shadow-lg border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">Find Your Flavor</CardTitle>
@@ -147,7 +147,7 @@ function ResultsAndSubmit({ state }: { state: ActionState }) {
         {!pending && state.recommendations && state.recommendations.length > 0 && (
           <div className="space-y-8">
             <h2 className="font-headline text-4xl font-bold text-center">Your Culinary Matches</h2>
-            <div className="grid gap-8 md:grid-cols-2 animate-in fade-in-50 duration-500">
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 animate-in fade-in-50 duration-500">
               {state.recommendations.map((rec, index) => (
                 <RecommendationCard key={index} recommendation={rec} index={index} />
               ))}
@@ -164,8 +164,8 @@ function LoadingSkeletons() {
     return (
         <div className="space-y-8">
             <Skeleton className="h-10 w-1/2 mx-auto" />
-            <div className="grid gap-8 md:grid-cols-2">
-                {[...Array(2)].map((_, i) => (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {[...Array(9)].map((_, i) => (
                   <div key={i} className="flex flex-col space-y-3">
                       <Skeleton className="h-[200px] w-full rounded-xl" />
                       <div className="space-y-2">

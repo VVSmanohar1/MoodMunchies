@@ -11,20 +11,20 @@ interface RecommendationCardProps {
 
 export function RecommendationCard({ recommendation, index }: RecommendationCardProps) {
   const placeholder = PlaceHolderImages[index % PlaceHolderImages.length];
+  const imageUrl = `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${recommendation.photoReference}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`;
+
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-xl hover:-translate-y-1 duration-300">
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
-          {placeholder && (
             <Image
-              src={placeholder.imageUrl}
-              alt={placeholder.description}
+              src={recommendation.photoReference ? imageUrl : placeholder.imageUrl}
+              alt={recommendation.restaurantName}
               fill
               className="object-cover"
               data-ai-hint={placeholder.imageHint}
             />
-          )}
         </div>
       </CardHeader>
       <CardContent className="p-6">
