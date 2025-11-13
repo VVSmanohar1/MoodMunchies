@@ -3,8 +3,6 @@
 import {generateFoodRecommendations} from '@/ai/flows/generate-food-recommendations';
 import {z} from 'zod';
 import type {ActionState, Recommendation} from '@/lib/types';
-import * as fs from 'fs/promises';
-import * as path from 'path';
 import fallbackRecs from '@/lib/fallback-recommendations.json';
 
 const recommendationSchema = z.object({
@@ -21,35 +19,6 @@ const recommendationSchema = z.object({
   location: z.string().min(3, 'Location must be at least 3 characters.'),
   additionalNotes: z.string().optional(),
 });
-
-const cacheFilePath = path.resolve(
-  process.cwd(),
-  'src',
-  'lib',
-  'cached-recommendations.json'
-);
-
-async function readCache(): Promise<Recommendation[]> {
-  try {
-    const data = await fs.readFile(cacheFilePath, 'utf-8');
-    const parsed = JSON.parse(data);
-    return parsed.recommendations || [];
-  } catch (error) {
-    // If cache doesn't exist or is invalid, start with an empty array.
-    return [];
-  }
-}
-
-async function writeCache(recommendations: Recommendation[]): Promise<void> {
-  try {
-    await fs.writeFile(
-      cacheFilePath,
-      JSON.stringify({recommendations}, null, 2)
-    );
-  } catch (error) {
-    console.error('Failed to write to cache:', error);
-  }
-}
 
 /**
  * Calls an async function with a retry mechanism and exponential backoff.
@@ -118,26 +87,9 @@ export async function getRecommendationsAction(
         isFallback: false,
       };
     }
-
-    // AI call was successful, update the cache with new unique recommendations
-    const existingRecs = await readCache();
-    const newRecs = result.recommendations;
-
-    const existingRestaurantNames = new Set(
-      existingRecs.map(rec => rec.restaurantName.toLowerCase())
-    );
-
-    const uniqueNewRecs = newRecs.filter(
-      rec => !existingRestaurantNames.has(rec.restaurantName.toLowerCase())
-    );
-
-    if (uniqueNewRecs.length > 0) {
-      const updatedCache = [...existingRecs, ...uniqueNewRecs];
-      await writeCache(updatedCache);
-    }
     
     return {
-      recommendations: newRecs,
+      recommendations: result.recommendations,
       error: null,
       isFallback: false,
     };
