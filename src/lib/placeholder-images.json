@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "food-1",
+      "description": "A delicious gourmet meal on a plate.",
+      "imageUrl": "https://images.unsplash.com/photo-1757358938541-c56a0c7c5846?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxnb3VybWV0JTIwbWVhbHxlbnwwfHx8fDE3NjMwMjk3MDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gourmet meal"
+    },
+    {
+      "id": "food-2",
+      "description": "A classic Italian pizza with fresh toppings.",
+      "imageUrl": "https://images.unsplash.com/photo-1715494534168-2ce3196e6d67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxpdGFsaWFuJTIwcGl6emF8ZW58MHx8fHwxNzYzMDIwNzAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "italian pizza"
+    },
+    {
+      "id": "food-3",
+      "description": "Interior of a cozy, rustic restaurant.",
+      "imageUrl": "https://images.unsplash.com/photo-1646473322803-94253d1dcbff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjb3p5JTIwcmVzdGF1cmFudHxlbnwwfHx8fDE3NjMwMjAxNjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "cozy restaurant"
+    },
+    {
+      "id": "food-4",
+      "description": "A healthy and colorful salad bowl.",
+      "imageUrl": "https://images.unsplash.com/photo-1510629954389-c1e0da47d414?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxoZWFsdGh5JTIwc2FsYWR8ZW58MHx8fHwxNzYyOTUxMjQwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy salad"
+    },
+    {
+      "id": "food-5",
+      "description": "A steaming bowl of Asian noodles.",
+      "imageUrl": "https://images.unsplash.com/photo-1753541152133-0972eef71b24?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxhc2lhbiUyMG5vb2RsZXN8ZW58MHx8fHwxNzYzMDI5NzAyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "asian noodles"
+    },
+    {
+      "id": "food-6",
+      "description": "A juicy burger with fries.",
+      "imageUrl": "https://images.unsplash.com/photo-1734774204115-941fb31c25c8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxqdWljeSUyMGJ1cmdlcnxlbnwwfHx8fDE3NjI5NDg1MDB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "juicy burger"
+    },
+    {
+      "id": "food-7",
+      "description": "A vibrant plate of Mexican tacos.",
+      "imageUrl": "https://images.unsplash.com/photo-1552332386-f8dd00dc2f85?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxtZXhpY2FuJTIwdGFjb3N8ZW58MHx8fHwxNzYyOTUzNTg1fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mexican tacos"
+    }
+  ]
 }
