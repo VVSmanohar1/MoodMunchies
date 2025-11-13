@@ -51,6 +51,35 @@ async function writeCache(recommendations: Recommendation[]): Promise<void> {
   }
 }
 
+/**
+ * Calls an async function with a retry mechanism and exponential backoff.
+ * @param fn The async function to call.
+ * @param maxRetries The maximum number of retries.
+ * @returns The result of the function call.
+ */
+async function callWithRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3
+): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      // Check for a specific error type if possible, e.g., a 503 status.
+      // For this generic example, we'll retry on any error.
+      if (i === maxRetries - 1) {
+        throw error; // Last retry failed, throw the error
+      }
+      // Exponential backoff: 1s, 2s, 4s...
+      const delay = Math.pow(2, i) * 1000 + Math.random() * 1000;
+      console.warn(`AI call failed, retrying in ${Math.round(delay)}ms... (Attempt ${i + 1})`);
+      await new Promise(res => setTimeout(res, delay));
+    }
+  }
+  // This line should not be reachable if maxRetries > 0
+  throw new Error('Exceeded max retries');
+}
+
 export async function getRecommendationsAction(
   prevState: ActionState,
   formData: FormData
@@ -77,8 +106,11 @@ export async function getRecommendationsAction(
   }
 
   try {
-    // Attempt to get fresh recommendations from the AI
-    const result = await generateFoodRecommendations(validatedFields.data);
+    // Attempt to get fresh recommendations from the AI with retry logic
+    const result = await callWithRetry(() =>
+      generateFoodRecommendations(validatedFields.data)
+    );
+
     if (!result.recommendations || result.recommendations.length === 0) {
       return {
         recommendations: [],
@@ -110,7 +142,7 @@ export async function getRecommendationsAction(
       isFallback: false,
     };
   } catch (error) {
-    console.error('Error generating recommendations, serving from fallback:', error);
+    console.error('Error generating recommendations after retries, serving from fallback:', error);
     
     // Fallback to a static, curated list of recommendations
     const staticFallback: Recommendation[] = fallbackRecs.recommendations;
