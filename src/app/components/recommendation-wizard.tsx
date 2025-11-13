@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/select';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
 import {Button} from '@/components/ui/button';
-import {Loader2, Mic, Sparkles, Lightbulb} from 'lucide-react';
+import {Loader2, Mic, Sparkles, Lightbulb, History} from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
 import {RecommendationCard} from './recommendation-card';
 import {Alert, AlertDescription, AlertTitle} from '@/components/ui/alert';
@@ -71,7 +71,7 @@ export function RecommendationWizard() {
   const {toast} = useToast();
 
   useEffect(() => {
-    // Only show toast for actual errors, not for fallback success
+    // Only show toast for actual errors, not for fallback success message
     if (state.error && !state.isFallback) {
       toast({
         variant: 'destructive',
@@ -228,10 +228,10 @@ function ResultsAndSubmit({state}: {state: ActionState}) {
           state.recommendations.length > 0 && (
             <div className="space-y-8">
               {state.isFallback && (
-                <Alert className="border-primary/50 text-primary-foreground bg-primary/10">
-                  <Info className="h-4 w-4 !text-primary" />
+                <Alert className="border-amber-500/50 text-amber-900 bg-amber-500/10 dark:text-amber-200 dark:border-amber-500/50 dark:bg-amber-900/20">
+                  <History className="h-4 w-4 !text-amber-600 dark:!text-amber-400" />
                   <AlertTitle className="font-bold">
-                    Using Fallback Suggestions
+                    Using Cached Suggestions
                   </AlertTitle>
                   <AlertDescription>{state.error}</AlertDescription>
                 </Alert>
