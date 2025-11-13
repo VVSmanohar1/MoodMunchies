@@ -5,6 +5,7 @@ import {z} from 'zod';
 import type {ActionState, Recommendation} from '@/lib/types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import fallbackRecs from '@/lib/fallback-recommendations.json';
 
 const recommendationSchema = z.object({
   mood: z.string().min(1, 'Mood is required.'),
@@ -34,7 +35,7 @@ async function readCache(): Promise<Recommendation[]> {
     const parsed = JSON.parse(data);
     return parsed.recommendations || [];
   } catch (error) {
-    console.warn('Cache read failed, starting with empty cache:', error);
+    // If cache doesn't exist or is invalid, start with an empty array.
     return [];
   }
 }
@@ -79,7 +80,6 @@ export async function getRecommendationsAction(
     // Attempt to get fresh recommendations from the AI
     const result = await generateFoodRecommendations(validatedFields.data);
     if (!result.recommendations || result.recommendations.length === 0) {
-      // If AI returns no results, still treat it as a non-error state
       return {
         recommendations: [],
         error: null,
@@ -87,51 +87,47 @@ export async function getRecommendationsAction(
       };
     }
 
-    // AI call was successful, update the cache
+    // AI call was successful, update the cache with new unique recommendations
     const existingRecs = await readCache();
     const newRecs = result.recommendations;
 
-    // Create a Set of existing restaurant names for quick lookup
     const existingRestaurantNames = new Set(
       existingRecs.map(rec => rec.restaurantName.toLowerCase())
     );
-    
-    // Filter out duplicates from the new recommendations
+
     const uniqueNewRecs = newRecs.filter(
       rec => !existingRestaurantNames.has(rec.restaurantName.toLowerCase())
     );
 
-    // Combine and write back to cache if there are any unique new ones
     if (uniqueNewRecs.length > 0) {
       const updatedCache = [...existingRecs, ...uniqueNewRecs];
       await writeCache(updatedCache);
     }
     
-    // Return the fresh recommendations from the AI
     return {
       recommendations: newRecs,
       error: null,
       isFallback: false,
     };
   } catch (error) {
-    console.error('Error generating recommendations, serving from cache:', error);
+    console.error('Error generating recommendations, serving from fallback:', error);
     
-    // AI call failed, fallback to local cache
-    const cachedRecs = await readCache();
+    // Fallback to a static, curated list of recommendations
+    const staticFallback: Recommendation[] = fallbackRecs.recommendations;
     
-    if (cachedRecs.length > 0) {
+    if (staticFallback.length > 0) {
       return {
-        recommendations: cachedRecs.slice(0, 9), // Show up to 9 from cache
+        recommendations: staticFallback,
         error:
-          'The AI is currently unavailable, but here are some suggestions from my memory!',
+          'The AI is currently unavailable, but here are some popular suggestions!',
         isFallback: true,
       };
     }
 
-    // If cache is also empty, return an error
+    // If static fallback is also empty for some reason, return an error
     return {
       recommendations: [],
-      error: 'The AI is currently unavailable and I could not find any cached recommendations. Please try again later.',
+      error: 'The AI is currently unavailable and I could not find any fallback recommendations. Please try again later.',
       isFallback: false,
     };
   }
