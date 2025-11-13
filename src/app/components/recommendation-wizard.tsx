@@ -1,7 +1,7 @@
 "use client";
 
-import { useFormState, useFormStatus } from "react-dom";
-import { useEffect } from "react";
+import { useActionState, useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { getRecommendationsAction } from "@/app/actions";
 import { useToast } from "@/hooks/use-toast";
 import type { ActionState } from "@/lib/types";
@@ -40,7 +40,7 @@ const dietaryPreferences = [
 ];
 
 export function RecommendationWizard() {
-  const [state, formAction] = useFormState(getRecommendationsAction, initialState);
+  const [state, formAction] = useActionState(getRecommendationsAction, initialState);
   const { toast } = useToast();
 
   useEffect(() => {
