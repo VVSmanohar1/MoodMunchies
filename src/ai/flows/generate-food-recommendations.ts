@@ -9,7 +9,6 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {searchNearbyPlaces} from '@/ai/tools/google-places';
 import {z} from 'genkit';
 
 const GenerateFoodRecommendationsInputSchema = z.object({
@@ -45,9 +44,12 @@ const GenerateFoodRecommendationsOutputSchema = z.object({
         foodSuggestion: z
           .string()
           .describe('A specific food suggestion from the restaurant.'),
-        description: z
+        reasonForRecommendation: z
           .string()
-          .describe('A description of the restaurant and food.'),
+          .describe('A short explanation on why this is a good recommendation based on the user\'s input.'),
+        location: z.string().describe("The general area or neighborhood of the restaurant."),
+        address: z.string().describe('The full street address of the restaurant.'),
+        contactDetails: z.string().optional().describe('The phone number or website of the restaurant.'),
       })
     )
     .describe(
@@ -69,10 +71,7 @@ const prompt = ai.definePrompt({
   name: 'generateFoodRecommendationsPrompt',
   input: {schema: GenerateFoodRecommendationsInputSchema},
   output: {schema: GenerateFoodRecommendationsOutputSchema},
-  tools: [searchNearbyPlaces],
-  prompt: `You are a personal food and restaurant recommendation assistant. Based on the user's mood, occasion, cuisine preferences, dietary requirements, preferred time, and location, provide a list of 9 personalized food and restaurant recommendations.
-
-Use the searchNearbyPlaces tool to find relevant restaurants.
+  prompt: `You are a personal food and restaurant recommendation assistant. Based on the user's mood, occasion, cuisine preferences, dietary requirements, preferred time, and location, provide a list of 9 personalized food and restaurant recommendations. For each recommendation, provide the restaurant name, a food suggestion, a reason for the recommendation, its location, address, and contact details.
 
 Mood: {{{mood}}}
 Occasion: {{{occasion}}}
@@ -82,7 +81,7 @@ Time: {{{time}}}
 Location: {{{location}}}
 Additional Notes: {{{additionalNotes}}}
 
-Please provide restaurant recommendations that closely align with the details provided.
+Please provide restaurant recommendations that closely align with the details provided. Ensure the recommendations are real restaurants that can be found at the provided address.
 `,
   config: {
     safetySettings: [

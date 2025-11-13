@@ -33,30 +33,9 @@ export const searchNearbyPlaces = ai.defineTool(
     outputSchema: NearbySearchOutputSchema,
   },
   async input => {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error('Google Maps API key is not set.');
-    }
-
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(
-        input.query
-      )}&key=${apiKey}`
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch places: ${response.status} ${response.statusText}`
-      );
-    }
-
-    const data = await response.json();
-
-    const places = data.results.map((result: any) => ({
-      name: result.name,
-      photoReference: result.photos?.[0]?.photo_reference,
-    }));
-
-    return {places};
+    // This tool is not actively used but kept for potential future use.
+    // It currently returns an empty array to avoid errors.
+    console.warn("searchNearbyPlaces tool was called but is configured to return no results.");
+    return {places: []};
   }
 );
