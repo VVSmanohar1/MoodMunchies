@@ -1,14 +1,20 @@
 'use server';
 
-import { generateFoodRecommendations } from '@/ai/flows/generate-food-recommendations';
-import { z } from 'zod';
-import type { ActionState } from '@/lib/types';
+import {generateFoodRecommendations} from '@/ai/flows/generate-food-recommendations';
+import {z} from 'zod';
+import type {ActionState} from '@/lib/types';
+import fallbackData from '@/lib/fallback-recommendations.json';
 
 const recommendationSchema = z.object({
   mood: z.string().min(1, 'Mood is required.'),
   occasion: z.string().min(1, 'Occasion is required.'),
   cuisine: z.string().min(1, 'Cuisine is required.'),
-  dietaryPreference: z.enum(['vegetarian', 'non-vegetarian', 'vegan', 'gluten-free']),
+  dietaryPreference: z.enum([
+    'vegetarian',
+    'non-vegetarian',
+    'vegan',
+    'gluten-free',
+  ]),
   time: z.string().min(1, 'Time is required.'),
   location: z.string().min(3, 'Location must be at least 3 characters.'),
   additionalNotes: z.string().optional(),
@@ -29,10 +35,13 @@ export async function getRecommendationsAction(
   });
 
   if (!validatedFields.success) {
-    const errorMessages = validatedFields.error.errors.map(e => e.message).join('. ');
+    const errorMessages = validatedFields.error.errors
+      .map(e => e.message)
+      .join('. ');
     return {
       recommendations: null,
       error: `Invalid form data: ${errorMessages}`,
+      isFallback: false,
     };
   }
 
@@ -42,17 +51,22 @@ export async function getRecommendationsAction(
       return {
         recommendations: [],
         error: null,
+        isFallback: false,
       };
     }
     return {
       recommendations: result.recommendations,
       error: null,
+      isFallback: false,
     };
   } catch (error) {
-    console.error('Error generating recommendations:', error);
+    console.error('Error generating recommendations, serving fallback:', error);
+    // Fallback to local data if AI fails
     return {
-      recommendations: null,
-      error: 'Failed to generate recommendations. The AI model might be unavailable. Please try again later.',
+      recommendations: fallbackData.recommendations,
+      error:
+        'The AI is currently unavailable, but here are some popular suggestions!',
+      isFallback: true,
     };
   }
 }

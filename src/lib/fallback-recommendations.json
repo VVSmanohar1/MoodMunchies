@@ -1,0 +1,85 @@
+{
+  "recommendations": [
+    {
+      "restaurantName": "The Cozy Corner",
+      "foodSuggestion": "Gourmet Grilled Cheese",
+      "reasonForRecommendation": "Perfect for a comforting and happy meal. The familiar taste of grilled cheese is elevated with artisanal bread and a blend of three cheeses.",
+      "location": "Downtown",
+      "address": "123 Main St, Anytown, USA",
+      "contactDetails": "(555) 123-4567",
+      "photoReference": "gourmet grilled cheese sandwich"
+    },
+    {
+      "restaurantName": "Noodle Nirvana",
+      "foodSuggestion": "Spicy Ramen Bowl",
+      "reasonForRecommendation": "A spicy kick to lift your spirits. This authentic ramen features a rich broth, tender pork, and a perfect soft-boiled egg.",
+      "location": "East Village",
+      "address": "456 Oak Ave, Anytown, USA",
+      "contactDetails": "www.noodlenirvana.com",
+      "photoReference": "spicy ramen bowl"
+    },
+    {
+      "restaurantName": "The Green Leaf",
+      "foodSuggestion": "Quinoa Power Salad",
+      "reasonForRecommendation": "A healthy and energizing option to combat stress. Packed with fresh vegetables, avocado, and a zesty lemon vinaigrette.",
+      "location": "Uptown",
+      "address": "789 Pine Ln, Anytown, USA",
+      "contactDetails": "(555) 987-6543",
+      "photoReference": "healthy quinoa salad"
+    },
+    {
+      "restaurantName": "Global Bites",
+      "foodSuggestion": "Chicken Tikka Masala",
+      "reasonForRecommendation": "For the adventurous palate, this classic Indian dish offers a complex blend of spices in a creamy tomato sauce that's both exciting and comforting.",
+      "location": "West End",
+      "address": "101 Maple Rd, Anytown, USA",
+      "contactDetails": "www.globalbites.com",
+      "photoReference": "chicken tikka masala"
+    },
+    {
+      "restaurantName": "Pizza Palace",
+      "foodSuggestion": "Margherita Pizza",
+      "reasonForRecommendation": "A classic choice for a relaxed evening. Simple, fresh ingredients on a perfectly baked crust make for a satisfying meal.",
+      "location": "Suburbia",
+      "address": "212 Birch St, Anytown, USA",
+      "contactDetails": "(555) 234-5678",
+      "photoReference": "margherita pizza"
+    },
+    {
+      "restaurantName": "The Grand Steakhouse",
+      "foodSuggestion": "Filet Mignon",
+      "reasonForRecommendation": "Ideal for a celebration. This top-quality steak is cooked to perfection, offering a luxurious and memorable dining experience.",
+      "location": "Financial District",
+      "address": "333 Elm Ct, Anytown, USA",
+      "contactDetails": "(555) 345-6789",
+      "photoReference": "filet mignon steak dinner"
+    },
+    {
+      "restaurantName": "Taco Town",
+      "foodSuggestion": "Carne Asada Tacos",
+      "reasonForRecommendation": "A quick, flavorful, and satisfying bite. The marinated grilled steak is served on warm corn tortillas with fresh salsa and guacamole.",
+      "location": "Market District",
+      "address": "444 Cedar Ave, Anytown, USA",
+      "contactDetails": "www.tacotown.com",
+      "photoReference": "carne asada tacos"
+    },
+    {
+      "restaurantName": "The Morning Glory",
+      "foodSuggestion": "Avocado Toast with Poached Eggs",
+      "reasonForRecommendation": "A trendy and delicious brunch option that's perfect for a date. It's light yet satisfying, and looks as good as it tastes.",
+      "location": "Arts District",
+      "address": "555 Spruce Dr, Anytown, USA",
+      "contactDetails": "(555) 567-8901",
+      "photoReference": "avocado toast poached egg"
+    },
+    {
+      "restaurantName": "Pasta Perfection",
+      "foodSuggestion": "Spaghetti and Meatballs",
+      "reasonForRecommendation": "A heartwarming classic that's a hit with the whole family. The rich marinara sauce and savory meatballs are pure comfort.",
+      "location": "Family Heights",
+      "address": "666 Willow Way, Anytown, USA",
+      "contactDetails": "(555) 678-9012",
+      "photoReference": "spaghetti meatballs"
+    }
+  ]
+}

@@ -5,10 +5,11 @@ export type Recommendation = {
   location: string;
   address: string;
   contactDetails?: string;
-  photoReference?: string; // This is now for AI-suggested image hints
+  photoReference?: string;
 };
 
 export type ActionState = {
   recommendations: Recommendation[] | null;
   error: string | null;
+  isFallback: boolean;
 };
