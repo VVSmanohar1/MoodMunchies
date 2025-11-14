@@ -17,8 +17,6 @@ const recommendationSchema = z.object({
   time: z.string().min(1, 'Time is required.'),
   location: z.string().min(3, 'Location must be at least 3 characters.'),
   additionalNotes: z.string().optional(),
-  spicy: z.string().optional(),
-  salty: z.string().optional(),
 });
 
 /**
@@ -62,8 +60,6 @@ export async function getRecommendationsAction(
     time: formData.get('time'),
     location: formData.get('location'),
     additionalNotes: formData.get('additionalNotes'),
-    spicy: formData.get('spicy'),
-    salty: formData.get('salty'),
   });
 
   if (!validatedFields.success) {
@@ -77,14 +73,6 @@ export async function getRecommendationsAction(
     };
   }
 
-  const { spicy, salty, additionalNotes, ...rest } = validatedFields.data;
-  const notes = [
-    additionalNotes,
-    spicy === 'on' ? 'spicy' : null,
-    salty === 'on' ? 'salty' : null,
-  ].filter(Boolean).join(', ');
-
-
   try {
     // Attempt to get fresh recommendations from the Python ML API with retry logic
     const result = await callWithRetry(async () => {
@@ -95,8 +83,13 @@ export async function getRecommendationsAction(
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ...rest,
-          additionalNotes: notes || undefined,
+          mood: validatedFields.data.mood,
+          occasion: validatedFields.data.occasion,
+          cuisine: validatedFields.data.cuisine,
+          dietaryPreference: validatedFields.data.dietaryPreference,
+          time: validatedFields.data.time,
+          location: validatedFields.data.location,
+          additionalNotes: validatedFields.data.additionalNotes || undefined,
         }),
       });
 
