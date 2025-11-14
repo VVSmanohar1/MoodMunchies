@@ -1,10 +1,11 @@
 'use client';
 
-import {useActionState, useEffect} from 'react';
+import {useActionState, useEffect, useState, useTransition} from 'react';
 import {useFormStatus} from 'react-dom';
 import {getRecommendationsAction} from '@/app/actions';
 import {useToast} from '@/hooks/use-toast';
 import type {ActionState} from '@/lib/types';
+import {VoiceInput, type ExtractedPreferences} from '@/components/voice-input';
 
 import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import {Label} from '@/components/ui/label';
@@ -69,6 +70,20 @@ export function RecommendationWizard() {
     initialState
   );
   const {toast} = useToast();
+  
+  // Form state for controlled components
+  const [formData, setFormData] = useState({
+    mood: '',
+    occasion: '',
+    cuisine: 'any',
+    dietaryPreference: 'non-vegetarian',
+    time: '',
+    location: '',
+    additionalNotes: '',
+  });
+  
+  const [showVoiceInput, setShowVoiceInput] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     // Only show toast for actual errors, not for fallback success message
@@ -81,8 +96,68 @@ export function RecommendationWizard() {
     }
   }, [state, toast]);
 
+  const handleVoicePreferences = (preferences: ExtractedPreferences) => {
+    const updates: Partial<typeof formData> = {};
+    
+    if (preferences.mood) {
+      updates.mood = preferences.mood.toLowerCase();
+    }
+    if (preferences.occasion) {
+      updates.occasion = preferences.occasion.toLowerCase();
+    }
+    if (preferences.cuisine) {
+      updates.cuisine = preferences.cuisine.toLowerCase();
+    }
+    if (preferences.dietaryPreference) {
+      updates.dietaryPreference = preferences.dietaryPreference.toLowerCase();
+    }
+    if (preferences.time) {
+      updates.time = preferences.time.toLowerCase();
+    }
+    if (preferences.location) {
+      updates.location = preferences.location;
+    }
+    if (preferences.additionalNotes) {
+      updates.additionalNotes = preferences.additionalNotes;
+    }
+    
+    setFormData(prev => ({...prev, ...updates}));
+    
+    toast({
+      title: 'Preferences extracted!',
+      description: 'Your voice preferences have been filled in. Review and submit when ready.',
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formDataObj = new FormData(form);
+    
+    // Use form state values if available, otherwise use form data
+    if (formData.mood) formDataObj.set('mood', formData.mood);
+    if (formData.occasion) formDataObj.set('occasion', formData.occasion);
+    if (formData.cuisine) formDataObj.set('cuisine', formData.cuisine);
+    if (formData.dietaryPreference) formDataObj.set('dietaryPreference', formData.dietaryPreference);
+    if (formData.time) formDataObj.set('time', formData.time);
+    if (formData.location) formDataObj.set('location', formData.location);
+    if (formData.additionalNotes) formDataObj.set('additionalNotes', formData.additionalNotes);
+    
+    // Wrap formAction call in startTransition
+    startTransition(() => {
+      formAction(formDataObj);
+    });
+  };
+
   return (
-    <form action={formAction} className="w-full max-w-6xl space-y-12">
+    <form onSubmit={handleSubmit} className="w-full max-w-6xl space-y-12">
+      {showVoiceInput && (
+        <VoiceInput
+          onPreferencesExtracted={handleVoicePreferences}
+          autoExtract={true}
+        />
+      )}
+      
       <Card className="shadow-lg border-2 border-primary/20">
         <CardHeader>
           <CardTitle className="font-headline text-3xl">
@@ -93,7 +168,12 @@ export function RecommendationWizard() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
               <Label htmlFor="mood">What's your mood?</Label>
-              <Select name="mood" required>
+              <Select
+                name="mood"
+                required
+                value={formData.mood}
+                onValueChange={(value) => setFormData(prev => ({...prev, mood: value}))}
+              >
                 <SelectTrigger id="mood">
                   <SelectValue placeholder="Select a mood" />
                 </SelectTrigger>
@@ -108,7 +188,12 @@ export function RecommendationWizard() {
             </div>
             <div>
               <Label htmlFor="occasion">What's the occasion?</Label>
-              <Select name="occasion" required>
+              <Select
+                name="occasion"
+                required
+                value={formData.occasion}
+                onValueChange={(value) => setFormData(prev => ({...prev, occasion: value}))}
+              >
                 <SelectTrigger id="occasion">
                   <SelectValue placeholder="Select an occasion" />
                 </SelectTrigger>
@@ -125,7 +210,12 @@ export function RecommendationWizard() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
             <div>
               <Label htmlFor="cuisine">Craving a cuisine?</Label>
-              <Select name="cuisine" defaultValue="any" required>
+              <Select
+                name="cuisine"
+                required
+                value={formData.cuisine}
+                onValueChange={(value) => setFormData(prev => ({...prev, cuisine: value}))}
+              >
                 <SelectTrigger id="cuisine">
                   <SelectValue placeholder="Select a cuisine" />
                 </SelectTrigger>
@@ -140,7 +230,12 @@ export function RecommendationWizard() {
             </div>
             <div>
               <Label htmlFor="time">Time of day?</Label>
-              <Select name="time" required>
+              <Select
+                name="time"
+                required
+                value={formData.time}
+                onValueChange={(value) => setFormData(prev => ({...prev, time: value}))}
+              >
                 <SelectTrigger id="time">
                   <SelectValue placeholder="Select a time" />
                 </SelectTrigger>
@@ -160,6 +255,8 @@ export function RecommendationWizard() {
                 name="location"
                 placeholder="e.g., Downtown, San Francisco"
                 required
+                value={formData.location}
+                onChange={(e) => setFormData(prev => ({...prev, location: e.target.value}))}
               />
             </div>
           </div>
@@ -167,7 +264,8 @@ export function RecommendationWizard() {
             <Label>Any dietary preferences?</Label>
             <RadioGroup
               name="dietaryPreference"
-              defaultValue="non-vegetarian"
+              value={formData.dietaryPreference}
+              onValueChange={(value) => setFormData(prev => ({...prev, dietaryPreference: value}))}
               className="mt-2 flex flex-wrap gap-4"
             >
               {dietaryPreferences.map(pref => (
@@ -186,16 +284,26 @@ export function RecommendationWizard() {
               id="additionalNotes"
               name="additionalNotes"
               placeholder="e.g., 'Looking for a quiet place', 'Something spicy!'"
+              value={formData.additionalNotes}
+              onChange={(e) => setFormData(prev => ({...prev, additionalNotes: e.target.value}))}
             />
           </div>
         </CardContent>
       </Card>
-      <ResultsAndSubmit state={state} />
+      <ResultsAndSubmit state={state} showVoiceInput={showVoiceInput} onToggleVoice={() => setShowVoiceInput(!showVoiceInput)} />
     </form>
   );
 }
 
-function ResultsAndSubmit({state}: {state: ActionState}) {
+function ResultsAndSubmit({
+  state,
+  showVoiceInput,
+  onToggleVoice,
+}: {
+  state: ActionState;
+  showVoiceInput: boolean;
+  onToggleVoice: () => void;
+}) {
   const {pending} = useFormStatus();
   const {toast} = useToast();
 
@@ -204,16 +312,11 @@ function ResultsAndSubmit({state}: {state: ActionState}) {
       <div className="flex items-center justify-between">
         <Button
           type="button"
-          variant="outline"
+          variant={showVoiceInput ? 'default' : 'outline'}
           size="lg"
-          onClick={() =>
-            toast({
-              title: 'Coming Soon!',
-              description: 'Voice input feature is under development.',
-            })
-          }
+          onClick={onToggleVoice}
         >
-          <Mic /> Use Voice
+          <Mic /> {showVoiceInput ? 'Hide Voice Input' : 'Use Voice'}
         </Button>
         <Button type="submit" size="lg" disabled={pending} className="font-bold">
           {pending ? <Loader2 className="animate-spin" /> : <Sparkles />}

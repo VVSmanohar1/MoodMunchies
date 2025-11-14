@@ -28,6 +28,7 @@ except ImportError:
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from ml_engine.enhanced_recommendation_engine import EnhancedRecommendationEngine
+from ml_engine.voice_extractor import VoicePreferenceExtractor
 
 app = FastAPI(title="Mood Munchies ML API", version="2.0.0")
 
@@ -91,11 +92,18 @@ try:
             else:
                 print("    → API keys found but clients failed to initialize")
                 print("    → Check if API keys are valid and packages are installed")
+    
+    # Initialize voice preference extractor
+    voice_extractor = VoicePreferenceExtractor(
+        ai_fetcher=engine.ai_fetcher if hasattr(engine, 'ai_fetcher') else None
+    )
+    print("Voice preference extractor initialized")
 except Exception as e:
     print(f"Error initializing recommendation engine: {e}")
     import traceback
     traceback.print_exc()
     engine = None
+    voice_extractor = None
 
 
 class RecommendationRequest(BaseModel):
@@ -279,6 +287,44 @@ async def search_restaurants(request: SearchRequest):
         raise HTTPException(
             status_code=500,
             detail=f"Error searching restaurants: {str(e)}"
+        )
+
+
+class VoiceExtractRequest(BaseModel):
+    """Request model for voice preference extraction"""
+    transcript: str
+    useAi: Optional[bool] = True
+
+
+@app.post("/api/voice/extract-preferences")
+async def extract_voice_preferences(request: VoiceExtractRequest):
+    """
+    Extract preferences from voice transcript
+    
+    Args:
+        request: VoiceExtractRequest with transcript text
+    
+    Returns:
+        Dictionary with extracted preferences
+    """
+    if voice_extractor is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Voice extractor is not available"
+        )
+    
+    try:
+        preferences = voice_extractor.extract_preferences(
+            transcript=request.transcript,
+            use_ai=request.useAi if request.useAi is not None else True
+        )
+        
+        return preferences
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error extracting preferences: {str(e)}"
         )
 
 
