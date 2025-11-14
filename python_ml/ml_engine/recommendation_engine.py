@@ -101,11 +101,14 @@ class RestaurantRecommendationEngine:
             'fast': 0.0,
             'affordable': 0.0,
             'upscale': 0.0,
+            'salty': 0.0
         }
         
         # Keyword matching for preferences
         if any(word in notes_lower for word in ['spicy', 'hot', 'heat', 'fiery']):
             preferences['spicy'] = 1.0
+        if any(word in notes_lower for word in ['salty', 'savoury']):
+            preferences['salty'] = 1.0
         if any(word in notes_lower for word in ['quiet', 'peaceful', 'calm', 'serene']):
             preferences['quiet'] = 1.0
         if any(word in notes_lower for word in ['romantic', 'date', 'intimate', 'cozy']):
@@ -142,6 +145,13 @@ class RestaurantRecommendationEngine:
                 score += 0.3
             total_weight += 0.3
         
+        if notes_preferences.get('salty', 0) > 0:
+            # Check if restaurant serves salty food (cuisine-based heuristic)
+            cuisine = restaurant.get('cuisine', '').lower()
+            if cuisine in ['italian', 'mexican', 'chinese', 'japanese']:
+                score += 0.3
+            total_weight += 0.3
+
         if notes_preferences.get('quiet', 0) > 0:
             if any(word in ambiance for word in ['quiet', 'peaceful', 'serene', 'calm']):
                 score += 0.2

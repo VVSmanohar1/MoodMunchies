@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {RadioGroup, RadioGroupItem} from '@/components/ui/radio-group';
+import {Checkbox} from '@/components/ui/checkbox';
 import {Button} from '@/components/ui/button';
 import {Loader2, Mic, Sparkles, Lightbulb, History} from 'lucide-react';
 import {Skeleton} from '@/components/ui/skeleton';
@@ -163,29 +164,48 @@ export function RecommendationWizard() {
               />
             </div>
           </div>
-          <div>
-            <Label>Any dietary preferences?</Label>
-            <RadioGroup
-              name="dietaryPreference"
-              defaultValue="non-vegetarian"
-              className="mt-2 flex flex-wrap gap-4"
-            >
-              {dietaryPreferences.map(pref => (
-                <div key={pref.value} className="flex items-center space-x-2">
-                  <RadioGroupItem value={pref.value} id={pref.value} />
-                  <Label htmlFor={pref.value} className="font-normal">
-                    {pref.label}
+          <div className="space-y-4">
+            <div>
+              <Label>Any dietary preferences?</Label>
+              <RadioGroup
+                name="dietaryPreference"
+                defaultValue="non-vegetarian"
+                className="mt-2 flex flex-wrap gap-4"
+              >
+                {dietaryPreferences.map(pref => (
+                  <div key={pref.value} className="flex items-center space-x-2">
+                    <RadioGroupItem value={pref.value} id={pref.value} />
+                    <Label htmlFor={pref.value} className="font-normal">
+                      {pref.label}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
+            </div>
+            <div>
+              <Label>Other preferences?</Label>
+              <div className="mt-2 flex flex-wrap gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="spicy" name="spicy" />
+                  <Label htmlFor="spicy" className="font-normal">
+                    Spicy
                   </Label>
                 </div>
-              ))}
-            </RadioGroup>
+                <div className="flex items-center space-x-2">
+                  <Checkbox id="salty" name="salty" />
+                  <Label htmlFor="salty" className="font-normal">
+                    Salty
+                  </Label>
+                </div>
+              </div>
+            </div>
           </div>
           <div>
             <Label htmlFor="additionalNotes">Any other notes?</Label>
             <Textarea
               id="additionalNotes"
               name="additionalNotes"
-              placeholder="e.g., 'Looking for a quiet place', 'Something spicy!'"
+              placeholder="e.g., 'Looking for a quiet place'..."
             />
           </div>
         </CardContent>
