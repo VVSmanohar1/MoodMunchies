@@ -1,6 +1,5 @@
 'use server';
 
-import {generateFoodRecommendations} from '@/ai/flows/generate-food-recommendations';
 import {z} from 'zod';
 import type {ActionState, Recommendation} from '@/lib/types';
 import fallbackRecs from '@/lib/fallback-recommendations.json';
@@ -75,10 +74,31 @@ export async function getRecommendationsAction(
   }
 
   try {
-    // Attempt to get fresh recommendations from the AI with retry logic
-    const result = await callWithRetry(() =>
-      generateFoodRecommendations(validatedFields.data)
-    );
+    // Attempt to get fresh recommendations from the Python ML API with retry logic
+    const result = await callWithRetry(async () => {
+      const apiUrl = process.env.ML_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/api/recommendations`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mood: validatedFields.data.mood,
+          occasion: validatedFields.data.occasion,
+          cuisine: validatedFields.data.cuisine,
+          dietaryPreference: validatedFields.data.dietaryPreference,
+          time: validatedFields.data.time,
+          location: validatedFields.data.location,
+          additionalNotes: validatedFields.data.additionalNotes || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`ML API error: ${response.status} ${response.statusText}`);
+      }
+
+      return await response.json();
+    });
 
     if (!result.recommendations || result.recommendations.length === 0) {
       return {
@@ -94,7 +114,7 @@ export async function getRecommendationsAction(
       isFallback: false,
     };
   } catch (error) {
-    console.error('Error generating recommendations after retries, serving from fallback:', error);
+    console.error('Error generating recommendations from ML API after retries, serving from fallback:', error);
     
     // Fallback to a static, curated list of recommendations
     const staticFallback: Recommendation[] = fallbackRecs.recommendations;

@@ -1,0 +1,515 @@
+{
+  "restaurants": [
+    {
+      "id": 1,
+      "restaurantName": "The Cozy Corner",
+      "cuisine": "american",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "gluten-free"],
+      "moodScores": {
+        "happy": 0.9,
+        "sad": 0.8,
+        "stressed": 0.7,
+        "adventurous": 0.3,
+        "relaxed": 0.9,
+        "celebratory": 0.6
+      },
+      "occasionScores": {
+        "casual meal": 0.95,
+        "celebration": 0.5,
+        "quick bite": 0.7,
+        "date night": 0.6,
+        "family dinner": 0.8
+      },
+      "timeScores": {
+        "breakfast": 0.8,
+        "brunch": 0.9,
+        "lunch": 0.85,
+        "dinner": 0.75,
+        "snack": 0.7
+      },
+      "location": "Downtown",
+      "address": "123 Main St, Anytown, USA",
+      "contactDetails": "(555) 123-4567",
+      "popularDishes": ["Gourmet Grilled Cheese", "Mac and Cheese", "Tomato Soup", "Caesar Salad"],
+      "priceRange": "moderate",
+      "ambiance": "cozy, casual, comforting"
+    },
+    {
+      "id": 2,
+      "restaurantName": "Noodle Nirvana",
+      "cuisine": "japanese",
+      "dietaryOptions": ["non-vegetarian", "vegetarian"],
+      "moodScores": {
+        "happy": 0.7,
+        "sad": 0.6,
+        "stressed": 0.5,
+        "adventurous": 0.8,
+        "relaxed": 0.6,
+        "celebratory": 0.5
+      },
+      "occasionScores": {
+        "casual meal": 0.9,
+        "celebration": 0.4,
+        "quick bite": 0.8,
+        "date night": 0.7,
+        "family dinner": 0.6
+      },
+      "timeScores": {
+        "breakfast": 0.3,
+        "brunch": 0.4,
+        "lunch": 0.9,
+        "dinner": 0.95,
+        "snack": 0.6
+      },
+      "location": "East Village",
+      "address": "456 Oak Ave, Anytown, USA",
+      "contactDetails": "www.noodlenirvana.com",
+      "popularDishes": ["Spicy Ramen Bowl", "Tonkotsu Ramen", "Miso Ramen", "Gyoza"],
+      "priceRange": "moderate",
+      "ambiance": "energetic, authentic, warm"
+    },
+    {
+      "id": 3,
+      "restaurantName": "The Green Leaf",
+      "cuisine": "american",
+      "dietaryOptions": ["vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.6,
+        "sad": 0.4,
+        "stressed": 0.9,
+        "adventurous": 0.5,
+        "relaxed": 0.8,
+        "celebratory": 0.3
+      },
+      "occasionScores": {
+        "casual meal": 0.85,
+        "celebration": 0.3,
+        "quick bite": 0.6,
+        "date night": 0.7,
+        "family dinner": 0.5
+      },
+      "timeScores": {
+        "breakfast": 0.8,
+        "brunch": 0.9,
+        "lunch": 0.95,
+        "dinner": 0.7,
+        "snack": 0.8
+      },
+      "location": "Uptown",
+      "address": "789 Pine Ln, Anytown, USA",
+      "contactDetails": "(555) 987-6543",
+      "popularDishes": ["Quinoa Power Salad", "Avocado Toast", "Green Smoothie Bowl", "Kale Caesar"],
+      "priceRange": "moderate",
+      "ambiance": "fresh, healthy, peaceful"
+    },
+    {
+      "id": 4,
+      "restaurantName": "Global Bites",
+      "cuisine": "indian",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.8,
+        "sad": 0.5,
+        "stressed": 0.4,
+        "adventurous": 0.95,
+        "relaxed": 0.5,
+        "celebratory": 0.7
+      },
+      "occasionScores": {
+        "casual meal": 0.7,
+        "celebration": 0.8,
+        "quick bite": 0.5,
+        "date night": 0.8,
+        "family dinner": 0.9
+      },
+      "timeScores": {
+        "breakfast": 0.4,
+        "brunch": 0.5,
+        "lunch": 0.8,
+        "dinner": 0.95,
+        "snack": 0.3
+      },
+      "location": "West End",
+      "address": "101 Maple Rd, Anytown, USA",
+      "contactDetails": "www.globalbites.com",
+      "popularDishes": ["Chicken Tikka Masala", "Butter Chicken", "Palak Paneer", "Biryani"],
+      "priceRange": "moderate",
+      "ambiance": "vibrant, aromatic, exotic"
+    },
+    {
+      "id": 5,
+      "restaurantName": "Pizza Palace",
+      "cuisine": "italian",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "gluten-free"],
+      "moodScores": {
+        "happy": 0.85,
+        "sad": 0.7,
+        "stressed": 0.6,
+        "adventurous": 0.4,
+        "relaxed": 0.9,
+        "celebratory": 0.7
+      },
+      "occasionScores": {
+        "casual meal": 0.95,
+        "celebration": 0.6,
+        "quick bite": 0.8,
+        "date night": 0.7,
+        "family dinner": 0.95
+      },
+      "timeScores": {
+        "breakfast": 0.2,
+        "brunch": 0.3,
+        "lunch": 0.9,
+        "dinner": 0.95,
+        "snack": 0.7
+      },
+      "location": "Suburbia",
+      "address": "212 Birch St, Anytown, USA",
+      "contactDetails": "(555) 234-5678",
+      "popularDishes": ["Margherita Pizza", "Pepperoni Pizza", "Quattro Formaggi", "Caesar Salad"],
+      "priceRange": "moderate",
+      "ambiance": "casual, family-friendly, relaxed"
+    },
+    {
+      "id": 6,
+      "restaurantName": "The Grand Steakhouse",
+      "cuisine": "american",
+      "dietaryOptions": ["non-vegetarian", "gluten-free"],
+      "moodScores": {
+        "happy": 0.7,
+        "sad": 0.4,
+        "stressed": 0.3,
+        "adventurous": 0.6,
+        "relaxed": 0.5,
+        "celebratory": 0.95
+      },
+      "occasionScores": {
+        "casual meal": 0.4,
+        "celebration": 0.95,
+        "quick bite": 0.2,
+        "date night": 0.9,
+        "family dinner": 0.7
+      },
+      "timeScores": {
+        "breakfast": 0.1,
+        "brunch": 0.2,
+        "lunch": 0.6,
+        "dinner": 0.95,
+        "snack": 0.1
+      },
+      "location": "Financial District",
+      "address": "333 Elm Ct, Anytown, USA",
+      "contactDetails": "(555) 345-6789",
+      "popularDishes": ["Filet Mignon", "Ribeye Steak", "Lobster Tail", "Caesar Salad"],
+      "priceRange": "expensive",
+      "ambiance": "elegant, sophisticated, upscale"
+    },
+    {
+      "id": 7,
+      "restaurantName": "Taco Town",
+      "cuisine": "mexican",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.9,
+        "sad": 0.6,
+        "stressed": 0.5,
+        "adventurous": 0.7,
+        "relaxed": 0.6,
+        "celebratory": 0.8
+      },
+      "occasionScores": {
+        "casual meal": 0.95,
+        "celebration": 0.7,
+        "quick bite": 0.95,
+        "date night": 0.6,
+        "family dinner": 0.8
+      },
+      "timeScores": {
+        "breakfast": 0.5,
+        "brunch": 0.6,
+        "lunch": 0.95,
+        "dinner": 0.9,
+        "snack": 0.9
+      },
+      "location": "Market District",
+      "address": "444 Cedar Ave, Anytown, USA",
+      "contactDetails": "www.tacotown.com",
+      "popularDishes": ["Carne Asada Tacos", "Fish Tacos", "Vegetarian Burrito", "Guacamole"],
+      "priceRange": "affordable",
+      "ambiance": "lively, festive, casual"
+    },
+    {
+      "id": 8,
+      "restaurantName": "The Morning Glory",
+      "cuisine": "american",
+      "dietaryOptions": ["vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.8,
+        "sad": 0.5,
+        "stressed": 0.4,
+        "adventurous": 0.4,
+        "relaxed": 0.9,
+        "celebratory": 0.6
+      },
+      "occasionScores": {
+        "casual meal": 0.8,
+        "celebration": 0.5,
+        "quick bite": 0.6,
+        "date night": 0.9,
+        "family dinner": 0.6
+      },
+      "timeScores": {
+        "breakfast": 0.95,
+        "brunch": 0.95,
+        "lunch": 0.7,
+        "dinner": 0.3,
+        "snack": 0.5
+      },
+      "location": "Arts District",
+      "address": "555 Spruce Dr, Anytown, USA",
+      "contactDetails": "(555) 567-8901",
+      "popularDishes": ["Avocado Toast with Poached Eggs", "Pancakes", "Acai Bowl", "Eggs Benedict"],
+      "priceRange": "moderate",
+      "ambiance": "trendy, bright, Instagram-worthy"
+    },
+    {
+      "id": 9,
+      "restaurantName": "Pasta Perfection",
+      "cuisine": "italian",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "gluten-free"],
+      "moodScores": {
+        "happy": 0.8,
+        "sad": 0.7,
+        "stressed": 0.6,
+        "adventurous": 0.5,
+        "relaxed": 0.85,
+        "celebratory": 0.7
+      },
+      "occasionScores": {
+        "casual meal": 0.8,
+        "celebration": 0.7,
+        "quick bite": 0.5,
+        "date night": 0.8,
+        "family dinner": 0.95
+      },
+      "timeScores": {
+        "breakfast": 0.2,
+        "brunch": 0.3,
+        "lunch": 0.8,
+        "dinner": 0.95,
+        "snack": 0.3
+      },
+      "location": "Family Heights",
+      "address": "666 Willow Way, Anytown, USA",
+      "contactDetails": "(555) 678-9012",
+      "popularDishes": ["Spaghetti and Meatballs", "Fettuccine Alfredo", "Lasagna", "Tiramisu"],
+      "priceRange": "moderate",
+      "ambiance": "warm, family-friendly, traditional"
+    },
+    {
+      "id": 10,
+      "restaurantName": "Sushi Sensation",
+      "cuisine": "japanese",
+      "dietaryOptions": ["non-vegetarian", "vegetarian"],
+      "moodScores": {
+        "happy": 0.8,
+        "sad": 0.5,
+        "stressed": 0.4,
+        "adventurous": 0.9,
+        "relaxed": 0.7,
+        "celebratory": 0.85
+      },
+      "occasionScores": {
+        "casual meal": 0.6,
+        "celebration": 0.9,
+        "quick bite": 0.5,
+        "date night": 0.95,
+        "family dinner": 0.5
+      },
+      "timeScores": {
+        "breakfast": 0.1,
+        "brunch": 0.2,
+        "lunch": 0.7,
+        "dinner": 0.95,
+        "snack": 0.4
+      },
+      "location": "Downtown",
+      "address": "777 Cherry Blvd, Anytown, USA",
+      "contactDetails": "(555) 789-0123",
+      "popularDishes": ["Salmon Sashimi", "Dragon Roll", "Tuna Nigiri", "Miso Soup"],
+      "priceRange": "expensive",
+      "ambiance": "elegant, modern, refined"
+    },
+    {
+      "id": 11,
+      "restaurantName": "Burger Bliss",
+      "cuisine": "american",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "vegan"],
+      "moodScores": {
+        "happy": 0.95,
+        "sad": 0.7,
+        "stressed": 0.6,
+        "adventurous": 0.5,
+        "relaxed": 0.7,
+        "celebratory": 0.8
+      },
+      "occasionScores": {
+        "casual meal": 0.95,
+        "celebration": 0.6,
+        "quick bite": 0.95,
+        "date night": 0.5,
+        "family dinner": 0.8
+      },
+      "timeScores": {
+        "breakfast": 0.3,
+        "brunch": 0.4,
+        "lunch": 0.95,
+        "dinner": 0.9,
+        "snack": 0.8
+      },
+      "location": "City Center",
+      "address": "888 Oak St, Anytown, USA",
+      "contactDetails": "(555) 890-1234",
+      "popularDishes": ["Classic Cheeseburger", "BBQ Bacon Burger", "Veggie Burger", "Sweet Potato Fries"],
+      "priceRange": "affordable",
+      "ambiance": "fun, casual, energetic"
+    },
+    {
+      "id": 12,
+      "restaurantName": "Dragon Wok",
+      "cuisine": "chinese",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.7,
+        "sad": 0.5,
+        "stressed": 0.4,
+        "adventurous": 0.8,
+        "relaxed": 0.5,
+        "celebratory": 0.7
+      },
+      "occasionScores": {
+        "casual meal": 0.9,
+        "celebration": 0.7,
+        "quick bite": 0.8,
+        "date night": 0.6,
+        "family dinner": 0.9
+      },
+      "timeScores": {
+        "breakfast": 0.2,
+        "brunch": 0.3,
+        "lunch": 0.9,
+        "dinner": 0.95,
+        "snack": 0.5
+      },
+      "location": "Chinatown",
+      "address": "999 Bamboo Ln, Anytown, USA",
+      "contactDetails": "(555) 901-2345",
+      "popularDishes": ["Kung Pao Chicken", "Sweet and Sour Pork", "Mapo Tofu", "Spring Rolls"],
+      "priceRange": "affordable",
+      "ambiance": "authentic, bustling, flavorful"
+    },
+    {
+      "id": 13,
+      "restaurantName": "Mediterranean Magic",
+      "cuisine": "mediterranean",
+      "dietaryOptions": ["vegetarian", "non-vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.7,
+        "sad": 0.5,
+        "stressed": 0.6,
+        "adventurous": 0.7,
+        "relaxed": 0.9,
+        "celebratory": 0.6
+      },
+      "occasionScores": {
+        "casual meal": 0.8,
+        "celebration": 0.6,
+        "quick bite": 0.6,
+        "date night": 0.85,
+        "family dinner": 0.7
+      },
+      "timeScores": {
+        "breakfast": 0.5,
+        "brunch": 0.6,
+        "lunch": 0.85,
+        "dinner": 0.9,
+        "snack": 0.6
+      },
+      "location": "Riverside",
+      "address": "111 Olive Way, Anytown, USA",
+      "contactDetails": "(555) 012-3456",
+      "popularDishes": ["Hummus Platter", "Grilled Lamb", "Falafel Wrap", "Greek Salad"],
+      "priceRange": "moderate",
+      "ambiance": "fresh, healthy, Mediterranean"
+    },
+    {
+      "id": 14,
+      "restaurantName": "BBQ Smokehouse",
+      "cuisine": "american",
+      "dietaryOptions": ["non-vegetarian", "gluten-free"],
+      "moodScores": {
+        "happy": 0.9,
+        "sad": 0.6,
+        "stressed": 0.5,
+        "adventurous": 0.7,
+        "relaxed": 0.6,
+        "celebratory": 0.9
+      },
+      "occasionScores": {
+        "casual meal": 0.9,
+        "celebration": 0.85,
+        "quick bite": 0.6,
+        "date night": 0.5,
+        "family dinner": 0.9
+      },
+      "timeScores": {
+        "breakfast": 0.2,
+        "brunch": 0.3,
+        "lunch": 0.9,
+        "dinner": 0.95,
+        "snack": 0.4
+      },
+      "location": "Southside",
+      "address": "222 Hickory St, Anytown, USA",
+      "contactDetails": "(555) 123-4568",
+      "popularDishes": ["BBQ Ribs", "Pulled Pork Sandwich", "Brisket", "Mac and Cheese"],
+      "priceRange": "moderate",
+      "ambiance": "rustic, hearty, smoky"
+    },
+    {
+      "id": 15,
+      "restaurantName": "Cafe Serenity",
+      "cuisine": "cafe",
+      "dietaryOptions": ["vegetarian", "vegan", "gluten-free"],
+      "moodScores": {
+        "happy": 0.6,
+        "sad": 0.8,
+        "stressed": 0.9,
+        "adventurous": 0.3,
+        "relaxed": 0.95,
+        "celebratory": 0.4
+      },
+      "occasionScores": {
+        "casual meal": 0.9,
+        "celebration": 0.3,
+        "quick bite": 0.8,
+        "date night": 0.8,
+        "family dinner": 0.5
+      },
+      "timeScores": {
+        "breakfast": 0.9,
+        "brunch": 0.95,
+        "lunch": 0.8,
+        "dinner": 0.5,
+        "snack": 0.95
+      },
+      "location": "Park District",
+      "address": "333 Tranquil Ave, Anytown, USA",
+      "contactDetails": "(555) 234-5679",
+      "popularDishes": ["Matcha Latte", "Avocado Toast", "Quiche", "Chocolate Croissant"],
+      "priceRange": "affordable",
+      "ambiance": "peaceful, cozy, quiet"
+    }
+  ]
+}
+
