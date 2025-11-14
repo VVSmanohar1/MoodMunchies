@@ -43,3 +43,35 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+# local settings
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+
+
+#python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.idea/
+
+# --- IGNORE ---
+# ML models and data
+/models/
+/data/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Spyder project settings
+.spyderproject
+
+
+# --- END IGNORE ---
