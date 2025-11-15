@@ -9,3 +9,6 @@ python-multipart
 python-dotenv
 openai
 google-generativeai
+librosa
+soundfile
+scipy

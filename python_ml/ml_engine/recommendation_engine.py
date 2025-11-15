@@ -214,6 +214,77 @@ class RestaurantRecommendationEngine:
         similarity = cosine_similarity(user_vector, self.restaurant_vectors[restaurant_idx:restaurant_idx+1])[0][0]
         return max(0.0, similarity)  # Ensure non-negative
     
+    def _normalize_location(self, location: str) -> str:
+        """
+        Normalize location string for matching (case-insensitive, common variations)
+        
+        Args:
+            location: Location string
+        
+        Returns:
+            Normalized location string
+        """
+        if not location:
+            return ""
+        
+        location = location.strip().lower()
+        
+        # Handle common city name variations
+        location_mappings = {
+            'bangalore': 'bangalore',
+            'bengaluru': 'bangalore',
+            'blr': 'bangalore',
+            'guntur': 'guntur',
+            'vijayawada': 'vijayawada',
+            'vizag': 'vijayawada',
+            'narasaraopet': 'narasaraopet',
+            'narasaraopeta': 'narasaraopet',
+            'mangalagiri': 'mangalagiri',
+            'tenali': 'tenali',
+            'sathenapally': 'sathenapally',
+            'sathenapalli': 'sathenapally'
+        }
+        
+        # Check if location matches any key or contains any key
+        for key, normalized in location_mappings.items():
+            if key in location or location in key:
+                return normalized
+        
+        return location
+    
+    def _match_location(self, restaurant_location: str, user_location: str) -> bool:
+        """
+        Match restaurant location with user location (fuzzy matching)
+        
+        Args:
+            restaurant_location: Restaurant's location
+            user_location: User's location
+        
+        Returns:
+            True if locations match, False otherwise
+        """
+        if not user_location or not restaurant_location:
+            return True  # If no location specified, don't filter
+        
+        # Normalize both locations
+        restaurant_loc = self._normalize_location(restaurant_location)
+        user_loc = self._normalize_location(user_location)
+        
+        # Exact match
+        if restaurant_loc == user_loc:
+            return True
+        
+        # Check if one contains the other (handles cases like "MG Road, Bangalore" matching "Bangalore")
+        if user_loc in restaurant_loc or restaurant_loc in user_loc:
+            return True
+        
+        # Also check if address contains the location
+        restaurant_address = restaurant_location.lower() if restaurant_location else ""
+        if user_loc in restaurant_address:
+            return True
+        
+        return False
+    
     def recommend(
         self,
         mood: str,
@@ -233,7 +304,7 @@ class RestaurantRecommendationEngine:
             cuisine: Preferred cuisine
             dietary_preference: Dietary restrictions
             time: Time of day
-            location: User's location (optional, for future location-based filtering)
+            location: User's location (optional, filters restaurants by location)
             additional_notes: Additional preferences (optional)
         
         Returns:
@@ -252,6 +323,13 @@ class RestaurantRecommendationEngine:
         scored_restaurants = []
         
         for restaurant in self.restaurants:
+            # Filter by location if provided
+            if location and not self._match_location(
+                restaurant.get('location', ''),
+                location
+            ):
+                continue  # Skip restaurants that don't match location
+            
             # Filter by dietary preference
             if not self._check_dietary_compatibility(restaurant, dietary_preference):
                 continue
