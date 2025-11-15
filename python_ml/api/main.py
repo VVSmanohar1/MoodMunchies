@@ -29,6 +29,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from ml_engine.enhanced_recommendation_engine import EnhancedRecommendationEngine
 from ml_engine.voice_extractor import VoicePreferenceExtractor
+from ml_engine.voice_emotion_detector import VoiceEmotionDetector
 
 app = FastAPI(title="Mood Munchies ML API", version="2.0.0")
 
@@ -98,12 +99,17 @@ try:
         ai_fetcher=engine.ai_fetcher if hasattr(engine, 'ai_fetcher') else None
     )
     print("Voice preference extractor initialized")
+    
+    # Initialize voice emotion detector
+    emotion_detector = VoiceEmotionDetector()
+    print("Voice emotion detector initialized")
 except Exception as e:
     print(f"Error initializing recommendation engine: {e}")
     import traceback
     traceback.print_exc()
     engine = None
     voice_extractor = None
+    emotion_detector = None
 
 
 class RecommendationRequest(BaseModel):
@@ -325,6 +331,56 @@ async def extract_voice_preferences(request: VoiceExtractRequest):
         raise HTTPException(
             status_code=500,
             detail=f"Error extracting preferences: {str(e)}"
+        )
+
+
+class VoiceEmotionRequest(BaseModel):
+    """Request model for voice emotion detection"""
+    audio: str  # Base64 encoded audio data
+    format: Optional[str] = "wav"
+
+
+@app.post("/api/voice/detect-emotion")
+async def detect_voice_emotion(request: VoiceEmotionRequest):
+    """
+    Detect emotion from voice audio using MFCCs, pitch, tone, and Random Forest
+    
+    Args:
+        request: VoiceEmotionRequest with base64 encoded audio
+    
+    Returns:
+        Dictionary with detected emotion and mood
+    """
+    if emotion_detector is None:
+        raise HTTPException(
+            status_code=503,
+            detail="Voice emotion detector is not available"
+        )
+    
+    try:
+        import base64
+        
+        # Decode base64 audio
+        audio_bytes = base64.b64decode(request.audio)
+        
+        # Detect emotion
+        # librosa can handle various formats including webm, wav, mp3, etc.
+        result = emotion_detector.detect_emotion_from_bytes(
+            audio_bytes,
+            format=request.format or "webm"
+        )
+        
+        return {
+            "emotion": result["emotion"],
+            "mood": result["mood"],
+            "confidence": result["confidence"],
+            "probabilities": result["probabilities"]
+        }
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error detecting emotion: {str(e)}"
         )
 
 
