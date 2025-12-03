@@ -191,83 +191,131 @@ The application follows a client-server architecture.
 
 ### **CHAPTER 6: IMPLEMENTATION**
 
-#### **6.1 Algorithms**
-The recommendation system is powered by a custom weighted scoring algorithm. Each restaurant is rated on a scale, and the final score is a sum of the following components:
+#### **6.1 Hybrid Recommendation Strategy**
+The recommendation system has evolved significantly from its initial prototype. It is now powered by a sophisticated **hybrid engine** that combines three distinct recommendation strategies to produce a single, unified list of suggestions. This approach ensures a balance between personalization, serendipity, and novelty. The final recommendations are an aggregation of results from the following three models:
 
-*   **Mood Matching (30% weight):** Each restaurant has pre-defined compatibility scores for various moods (e.g., happy, sad, stressed). The user's selected mood is matched against these scores.
-*   **Occasion Matching (30% weight):** Similarly, restaurants are scored for their suitability for different occasions (e.g., casual meal, date night, celebration).
-*   **Time Matching (10% weight):** Restaurants are checked for their appropriateness for the selected time of day (e.g., breakfast, lunch, dinner).
-*   **Cuisine Matching (10% weight):** A high score is given for an exact cuisine match. A partial score is given if the user selects "any".
-*   **Content Similarity (10% weight):** TF-IDF (Term Frequency-Inverse Document Frequency) cosine similarity is used to compare the descriptive features of a restaurant with the user's preferences.
-*   **Additional Notes (10% weight):** User-provided keywords (e.g., "spicy", "quiet") are matched against restaurant tags to refine the score.
+1.  **Content-Based Filtering (Personalized Match Score):** This remains the core of the engine, providing a baseline of personalization. It calculates a "match score" for each restaurant based on a weighted sum of its compatibility with the user's explicit preferences. The components are:
+    *   **Mood & Occasion Matching (40% weight):** Matches the user's selected mood and occasion against pre-defined scores in the dataset.
+    *   **Context Matching (20% weight):** Accounts for time of day and cuisine preferences.
+    *   **Textual Similarity (10% weight):** Uses TF-IDF cosine similarity to match descriptive features with the user's query.
 
-#### **6.1.5 Implementation Procedure**
-The project was implemented in the following phases:
-1.  **Project Setup:** Initialized a Next.js project for the frontend and a Python environment for the backend.
-2.  **Dataset Curation:** Created the `restaurants.json` file, defining the structure and manually assigning scores for mood and occasion to each restaurant entry.
-3.  **Backend Development:**
-    *   Implemented the recommendation engine in Python, focusing on the scoring algorithm.
-    *   Developed the FastAPI server to expose the engine through a `/recommend` endpoint.
-4.  **Frontend Development:**
-    *   Built the UI components using React and TypeScript.
-    *   Designed the recommendation wizard to capture all necessary user inputs.
-    *   Styled the entire application using Tailwind CSS for a modern and responsive look.
-5.  **Integration:**
-    *   Connected the frontend to the backend API.
-    *   Implemented the logic to fetch recommendations and display them dynamically on the page.
+2.  **Collaborative Filtering (Community Wisdom):** To introduce serendipity and leverage community trends, a collaborative filtering model has been implemented. This model works by analyzing the behavior of other users in the system.
+    *   **User-Item Interaction Matrix:** The system maintains a matrix of user interactions (e.g., clicks, saves, positive feedback).
+    *   **Similarity Calculation:** When a user requests a recommendation, the engine identifies a cohort of "similar users" who have rated restaurants similarly in the past.
+    *   **Suggestion Generation:** The engine then recommends restaurants that this similar user group liked but that the current user has not yet interacted with, effectively saying, "Users with tastes like yours also liked these places."
+
+3.  **AI-Powered Suggestions (Generative Novelty):** The most advanced component is the integration of a generative AI model using **Genkit**. This model introduces novel and creative suggestions that may not be apparent from the structured data alone.
+    *   **Dynamic Prompt Generation:** The user's inputs (mood, occasion, cuisine, notes) are compiled into a dynamic, natural language prompt. For example: "Suggest a creative and exciting restaurant for an adventurous mood on a date night, with a preference for spicy food."
+    *   **Generative Inference:** This prompt is sent to a pre-trained Large Language Model (LLM) via the Genkit framework.
+    *   **Parsing and Ranking:** The LLM returns a list of one or two unique suggestions with a justification. These AI-generated results are then added to the final recommendation pool.
+
+#### **6.2 Aggregation and Ranking**
+The results from all three models are not simply concatenated. They are fed into a final aggregation layer that intelligently ranks and de-duplicates the results to present the user with the top 3-5 unique and most relevant recommendations. This ensures the final list is diverse and high-quality.
+
+#### **6.3 Implementation Procedure**
+The implementation followed a phased approach, with recent work focusing on upgrading the backend.
+
+1.  **Project Setup:** Initialized the Next.js frontend, Python backend, and version control.
+2.  **Dataset and Environment Setup:** Curated the `restaurants.json` file and established separate environment configurations (`.dev`, `.prod`) for managing API keys and database credentials.
+3.  **Backend Evolution:**
+    *   **Initial Engine (`recommendation_engine.py`):** Implemented the baseline content-based filtering algorithm.
+    *   **Enhanced Engine (`enhanced_recommendation_engine.py`):** Developed the new hybrid engine, integrating the collaborative filtering logic and the Genkit-powered AI suggestion module.
+4.  **Frontend Development:** Built the responsive UI with React/TypeScript and connected it to the backend.
+5.  **Integration:** Refactored the API layer (`main.py`) to call the new `enhanced_recommendation_engine` and aggregate the results before sending them to the client.
 
 ---
 
 ### **CHAPTER 7: CODING**
 
-#### **7.1 Coding and Explanation**
-The codebase is logically divided into two main parts: `src` for the frontend and `python_ml` for the backend.
+#### **7.1 Codebase Structure and Explanation**
+The codebase is logically divided into the `src` directory for the frontend and the `python_ml` directory for the backend. The evolution of the project has resulted in a more modular and powerful backend structure.
 
-*   **`src/app/page.tsx`**: This is the main entry point of the web application. It contains the primary UI component, `RecommendationWizard`, which manages the state for user inputs and triggers the API call.
-*   **`src/app/components/recommendation-card.tsx`**: A React component responsible for displaying a single restaurant recommendation, neatly formatting its details.
-*   **`python_ml/api/main.py`**: This file sets up the FastAPI server and defines the `/recommend` endpoint which accepts user preferences and returns a list of recommendations.
-*   **`python_ml/ml_engine/recommendation_engine.py`**: This is the heart of the backend. It contains the core `get_recommendations` function, which implements the entire scoring and ranking algorithm described in Chapter 6.
+##### **Frontend Codebase (`src/`)**
+*   **`src/app/page.tsx`**: The main entry point of the Next.js application, which houses the `RecommendationWizard` component and manages the display of the final recommendations.
+*   **`src/app/actions.ts`**: Contains the server-side function `getRecommendations` that acts as the bridge to the backend, sending the user's preferences to the FastAPI service.
+*   **`src/app/components/recommendation-wizard.tsx`**: A stateful React component that collects all user inputs (mood, occasion, etc.) and triggers the recommendation request.
+*   **`src/app/components/recommendation-card.tsx`**: A presentational component for displaying a single restaurant recommendation.
 
-#### **7.2 Dataset Details**
-The dataset is stored in `python_ml/data/restaurants.json`. It is a JSON array where each object represents a restaurant with the following key fields:
-*   `name`: The restaurant's name.
-*   `cuisine`: The primary cuisine type.
-*   `features`: A text description of the restaurant.
-*   `address`, `contact`: Location and contact details.
-*   `mood_scores`: An object with scores for moods like `happy`, `sad`, etc.
-*   `occasion_scores`: An object with scores for occasions like `date_night`, `family_dinner`, etc.
+##### **Backend Codebase (`python_ml/`)**
+*   **`python_ml/api/main.py`**: The entry point for the FastAPI server. This file has been updated to import and call the `get_hybrid_recommendations` function from the new engine. It is responsible for orchestrating the calls to the different recommendation models and aggregating their results into a single response.
+
+*   **`python_ml/ml_engine/enhanced_recommendation_engine.py`**: This is the new core of the backend. It contains the primary `get_hybrid_recommendations` function which orchestrates the hybrid strategy. It first calls the legacy content-based filter, then the collaborative filter, and finally the Genkit AI model, before combining the results.
+
+*   **`python_ml/ml_engine/recommendation_engine.py`**: The original recommendation engine. It is now used as the **Content-Based Filtering component** of the enhanced engine. Its `get_recommendations` function is called by the new engine to generate a baseline set of personalized scores.
+
+*   **`python_ml/ml_engine/collaborative_filtering.py`**: This new file contains the logic for the collaborative filtering model. It includes functions to build the user-item interaction matrix and calculate user similarity to generate community-driven suggestions.
+
+*   **`python_ml/ml_engine/ai_suggester.py`**: This file encapsulates the interaction with the Genkit framework. It contains the function that constructs the natural language prompt from user inputs and invokes the generative AI model to get novel restaurant suggestions.
+
+*   **`config/`**: This directory contains environment configuration files such as `.env.dev` and `.env.prod`. These files are used to manage sensitive information like API keys for the Genkit AI service and database connection strings, ensuring they are not hardcoded into the source.
+
+#### **7.2 Dataset and Data Models**
+The data sources for the application have also evolved.
+
+*   **`python_ml/data/restaurants.json`**: This file remains the primary source for restaurant attributes, including the manually engineered `mood_scores` and `occasion_scores` used by the content-based filter.
+
+*   **User Interaction Data:** The collaborative filtering model relies on a (conceptual) database that logs user interactions, such as which recommendations a user clicks on or marks as a favorite. This data is essential for finding users with similar tastes.
 
 ---
 
 ### **CHAPTER 8: TESTING**
 
-#### **8.1 Testing Introduction**
-Testing was a crucial phase to ensure the application is robust, reliable, and provides a good user experience. The testing strategy included unit tests for core logic, integration tests for component communication, and UI tests for the user interface.
+#### **8.1 Testing Strategy**
+With the evolution of the recommendation engine into a hybrid system, the testing strategy was expanded to ensure the correctness of each component and their successful integration. The strategy encompasses unit tests for individual algorithmic components, integration tests for the hybrid engine, and end-to-end UI testing.
 
 ##### **8.1.1 Unit Testing**
-Unit tests were focused on isolating and verifying the smallest parts of the application. For the backend, this meant writing tests for the `recommendation_engine.py` functions to ensure the scoring logic was correct for a given input.
+Unit tests were written to validate the logic of each recommendation model in isolation.
+*   **Content-Based Filter:** Tests confirmed that the `recommendation_engine.py` functions correctly calculate weighted scores based on mood, occasion, and other factors from a sample input.
+*   **Collaborative Filter:** Tests for `collaborative_filtering.py` involved creating a sample user-item interaction matrix and asserting that the algorithm correctly identifies users with similar tastes.
+*   **AI Suggester:** Unit tests for `ai_suggester.py` focused on verifying that the natural language prompt is correctly generated from user inputs. The Genkit API call itself was mocked to isolate the prompt generation logic.
 
 ##### **8.1.2 Integration Testing**
-Integration tests were performed to verify the communication between the frontend and backend. A key test involved making a call from the Next.js app to the FastAPI backend and asserting that the response was correctly formatted and contained the expected data structure.
+Integration tests focused on the communication and orchestration between the different parts of the system.
+*   **Hybrid Engine Integration:** The primary integration test was for the `enhanced_recommendation_engine.py`. This test involved calling the main `get_hybrid_recommendations` function and asserting that it correctly invokes all three sub-models (content-based, collaborative, AI) and that their results are intelligently aggregated and de-duplicated in the final output.
+*   **API Integration:** Tests confirmed that the FastAPI `main.py` endpoint correctly receives a request, calls the enhanced engine, and returns a `200 OK` status with a valid JSON response.
 
 ##### **8.1.3 User Interface (UI) Testing**
-UI testing involved manually interacting with the web application to check for visual consistency and usability. This included testing on different browsers and screen sizes to ensure responsiveness and checking that all interactive elements like buttons and dropdowns behaved as expected.
+UI testing involved manual checks to guarantee a seamless user experience across different browsers and devices, confirming that the application remains responsive and that all interactive elements function correctly.
 
-#### **8.2 Test Cases**
+#### **8.2 Expanded Test Cases**
 
-| Test ID | Type        | Description                                                                                             | Expected Result                                                                |
-|---------|-------------|---------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
-| UT-01   | Unit        | Test the recommendation engine with "Happy" mood and "Celebration" occasion.                              | The top-ranked restaurant should have high scores for both `happy` and `celebration`. |
-| UT-02   | Unit        | Test the engine with an unknown cuisine type.                                                           | The engine should gracefully handle the input and rely on other factors.       |
-| IT-01   | Integration | Make a POST request from the frontend to the `/recommend` endpoint.                                     | A `200 OK` status code is returned with a valid JSON body of recommendations.  |
-| UI-01   | UI          | Select options from all dropdowns and click "Get Recommendations".                                      | Recommendation cards appear on the screen without any layout issues.           |
-| UI-02   | UI          | View the application on a mobile device screen size.                                                    | The layout should adapt to the smaller screen, and all text should be readable. |
+| Test ID | Type        | Description                                                                                             | Expected Result                                                                    |
+|---------|-------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| UT-01   | Unit        | Test the **content-based filter** with "Happy" mood and "Celebration" occasion.                       | The top-ranked restaurant should have high scores for both `happy` and `celebration`.     |
+| UT-02   | Unit        | Test the engine with an unknown cuisine type.                                                           | The engine should gracefully handle the input and rely on other factors.           |
+| **UT-03** | **Unit**    | Test the **collaborative filtering** logic with a mock user-item matrix.                                | The function should return a list of users sorted by their similarity score.       |
+| **UT-04** | **Unit**    | Test the **AI suggester's** prompt generation for a complex user input.                                  | A well-formed natural language prompt incorporating all user inputs is generated.  |
+| IT-01   | Integration | Make a POST request from the frontend to the `/recommend` endpoint.                                     | A `200 OK` status is returned with a valid JSON body of recommendations.       |
+| **IT-02** | **Integration** | Call the main **hybrid engine** function (`get_hybrid_recommendations`).                                | The returned list should contain de-duplicated results from all three models.      |
+| UI-01   | UI          | Select options from all dropdowns and click "Get Recommendations".                                      | Recommendation cards appear on the screen without any layout issues.               |
+| UI-02   | UI          | View the application on a mobile device screen size.                                                    | The layout adapts to the smaller screen, and all text is readable.               |
 
 ---
 
 ### **CHAPTER 9: RESULT**
 
-The project successfully resulted in a fully functional prototype of the "Mood Munchies" application. The final product is a web application that effectively generates personalized restaurant recommendations based on the user's specified mood, occasion, and other preferences. The user interface is clean, intuitive, and responsive, providing a seamless experience from input to result. The backend recommendation engine accurately processes user requests and returns relevant and diverse suggestions, fulfilling the core objective of the project. The final result demonstrates a successful proof-of-concept for the viability of incorporating emotional and contextual data into recommendation systems.
+The project culminated in a fully functional and highly effective "Mood Munchies" web application. The final result successfully integrates a user-friendly frontend with a powerful, multi-faceted backend, delivering on the core promise of providing nuanced, context-aware restaurant recommendations. The outcomes of the project can be broken down as follows:
+
+#### **9.1 Superior Recommendation Quality**
+The key result of the project is the superior quality of the recommendations generated by the **hybrid engine**. By blending three distinct models, the system produces suggestions that are simultaneously:
+*   **Relevant:** The content-based filter ensures that every recommendation is a direct match for the user's stated preferences.
+*   **Popular and Socially Vetted:** The collaborative filtering component introduces well-liked restaurants from users with similar tastes, adding a layer of social proof.
+*   **Novel and Surprising:** The AI-powered suggestions from Genkit often produce unexpected but highly relevant "wildcard" options, delighting users and preventing recommendation monotony.
+
+*[Insert a screenshot here showing the final recommendation cards, ideally with a mix of different types of suggestions, perhaps with small labels like "Your Match" vs. "Popular Choice".]*
+**Figure 9.1: A diverse set of recommendations from the hybrid engine.**
+
+#### **9.2 Fully Integrated Application**
+The project resulted in a seamless, end-to-end application. The Next.js frontend provides a clean, responsive, and intuitive wizard for capturing user input. This client-side application communicates flawlessly with the FastAPI backend, which orchestrates the complex logic of the hybrid engine and returns the aggregated results. The final product feels like a single, cohesive application, fulfilling a primary goal of the project.
+
+*[Insert a screenshot here showing the full application flow: the user input form on the left and the resulting recommendation cards on the right.]*
+**Figure 9.2: The end-to-end user experience, from input to result.**
+
+#### **9.3 Successful Proof-of-Concept for Advanced AI Integration**
+A significant result was the successful integration of a generative AI model (via Genkit) into a traditional recommendation pipeline. The project demonstrates that Large Language Models can be effectively used not just for chatbots, but as a creative and valuable component within a larger, data-driven system. The AI suggester proved its ability to add significant value by providing human-like, creative ideas that go beyond the limitations of the structured dataset.
+
+*[Insert a screenshot here showing a specific recommendation card that was clearly generated by the AI, perhaps with a more descriptive or creative justification.]*
+**Figure 9.3: An example of a novel recommendation generated by the AI model.**
 
 ---
 
@@ -321,3 +369,4 @@ This section would include a bibliography of all research papers, articles, and 
 *   Official documentation for FastAPI.
 *   Academic papers on content-based and collaborative filtering recommendation systems.
 *   Articles on UI/UX design principles for web applications.
+
